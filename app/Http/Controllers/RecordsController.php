@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Record;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class RecordsController extends Controller
 {
@@ -15,7 +14,11 @@ class RecordsController extends Controller
      */
     public function index()
     {
-        return Record::all();
+        $records = Record::all();
+        $records->each(function ($record) {
+            $record->price = $record->amount * .25;
+        });
+        return $records;
     }
 
     /**
@@ -37,7 +40,6 @@ class RecordsController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        logger($data);
         $record = new Record($data);
         $record->save();
         return $record;
@@ -62,7 +64,7 @@ class RecordsController extends Controller
      */
     public function edit($id)
     {
-        //
+        logger("edit");
     }
 
     /**
@@ -74,7 +76,10 @@ class RecordsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $record = Record::findOrFail($id);
+        $data = $request->all();
+        $record->update($data);
+        return $record;
     }
 
     /**
@@ -85,6 +90,13 @@ class RecordsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $record = Record::findOrFail($id);
+        $record->delete();
+        return $record;
+    }
+    public function deleteRecords(Request $request) {
+        $data = $request->get('records');
+        $deleted = Record::destroy($data);
+        return $deleted;
     }
 }

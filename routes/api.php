@@ -16,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('users', 'UsersController');
 Route::resource('records', 'RecordsController');
+Route::post('/records/delete', 'RecordsController@deleteRecords');
 Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
